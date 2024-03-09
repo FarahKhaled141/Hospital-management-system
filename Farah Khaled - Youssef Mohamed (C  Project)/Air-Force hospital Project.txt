@@ -1,0 +1,455 @@
+#include <stdio.h>   
+#include <stdlib.h>
+#include <string.h>
+//struct to carry employee data:
+struct employee {
+    char name[20];
+    char jobtitle[30];
+    int age;
+    int salary;
+};
+//struct to carry Patient's data:
+struct Patient {
+    char name[20];
+    int id;
+    int age;
+    char status[50];
+    int room;
+};
+//struct to carry username and passwords of all users:
+struct Login {
+    char username[10];
+    char password[8];
+    int type; // 0 & 1  for employees , 2 to 4 for patients
+};
+//struct to add vales to usernames, passwords and type of the user.
+struct Login users[12] = {{"Farah", "1234", 0}, {"Youssef", "1235", 1},{"patient1", "1010", 2},{"patient2", "2020", 3},{"patient3", "3030", 4}};
+int numusers=12;
+//struct to carry room details.
+struct Room {
+    int room_number;
+    int id;
+    int occupied;   // 1 for occupied, 0 for vacant
+};
+//struct to carry rservation details== values added to the struct room that is above. 
+struct  Room reservations[10] = { {201,1010 ,1},{202,0, 0},{203,0, 0},{204,0,0},{205,2020,1} ,{206,3030,1},{207,0,0},{208,0,0},{209,0,0}};
+    int num_rooms = 9;
+ //adding patients data at a struct 
+struct Patient patients[12]={{"Ahmed",1010,22,"Diabetes", 201},{"Marwa", 2020,25,"Giving Birth", 205},{"Mohamed", 3030 ,60,"Heart Attack", 206}};
+//Signup function:
+void signup() {
+    printf("Enter Your name: ");
+    scanf("%s", patients[numusers].name); //takes the name from user and id
+    printf("Enter ID        [Must be 4 digits]\n");
+   char idString[8]; 
+    scanf("%s",&idString);
+    if (strlen(idString) != 4) //check length of id
+    {
+    printf("Error: Please enter a 4-digit number.\n"); //if not of length 4 error message appears
+    return;
+    }
+
+    for(int i=0;i<numusers;i++) //check if entered id already exists
+    {
+     if (atoi(idString)==patients[i].id ){
+         printf("Patient already exists, please choose another id\n");
+         break;
+     }
+     else
+     {
+      patients[numusers].id = atoi(idString); //atoi() changes the string/char to int.
+      printf("Patient added sucessfully.\n");
+      break;
+      
+     }}
+    
+}
+//the remove reservation function
+ void removeReservation(struct Room reservations[], int num_rooms) {
+     int add;
+    int reserve;
+      printf("Enter room number \n");
+   scanf("%i", &reserve );
+    for(int i=0;i<num_rooms;i++)
+    { 
+     //check if room no entered=data saved
+       if(reservations[i].room_number==reserve  ) 
+       {
+           //if yes checks if it is occupied or not and removes the reservation
+           if(reservations[i].occupied ==1){
+           reservations[i].occupied = 0;
+           printf("Room %d reservation removed.\n", reservations[i].room_number);
+             
+             break;
+           }
+           else
+           {
+               //if there is no reservation it asks the user if he wants to reserve that empty room or not.
+               printf("No current reservations to remove.\n");
+                 printf("%s\n","Enter '1' two times to reserve it");
+                 scanf("%i\n",& add);
+                if (add==1){
+                reservations[i].occupied=1;
+                printf("%s\n","Reserved sucessfully");
+                break;
+           }
+               else {
+                   printf("%s\n"," Wrong entry ");
+                   break;
+               }
+           }
+       }
+    
+    }
+ 
+}
+//check room if empty or not function:
+void checkroom(struct Room reservations[], int num_rooms)
+   {
+      
+     int check;
+    printf("Enter room number\n");
+    scanf("%i", &check ); //it takes the room no from user 
+       for(int i=0;i<num_rooms;i++)
+       {
+          if(reservations[i].room_number==check) //if equal to data we have 
+       {
+           printf("%i ",reservations[i].room_number);
+          if((reservations[i].occupied)==1){ //if it's value =1 then it is reserved if 0 it's empty.
+              printf("%s\n","Reserved Room"); 
+              
+          }
+          else
+          {
+               printf("%s\n","Room is Empty");
+          }
+           break;
+       }
+      
+       }
+   }
+   //the update status function that makes the dr able to update the patient's diagnoses.
+void updatestatus(struct Patient patients[], int numusers){
+      
+     int id;
+     char status [50];
+    printf("Enter patient's ID:\n");
+    scanf("%i", &id );
+       for(int i=0;i<numusers;i++)
+       {
+          if(patients[i].id==id) //it takes the patient's id from user
+       {
+           printf("%s\n","The old status: ");
+           printf("%s\n",patients[i].status);
+           printf("%s\n","Write the updated status");
+           scanf("%s", &status);
+           strcpy(patients[i].status,status); //copy the status entered to the struct that carries the patient's data.
+           printf("Updated successfully  ");
+           printf("%s\n",patients[i].status);
+           break;
+            
+          }
+          else
+          {
+               printf("%s\n","The id you entered doesn't exist\n");
+          }
+           break;
+       }
+      
+       }
+   
+
+void main()
+{
+    char Username[10];
+    char Password[7];
+    printf("Welcome to Air Force Hospital Website\n");
+    //calling some structs and adding values to it to be used during the program:
+   struct employee emp1 = {"Farah Khaled","Reception",21, 50000};
+   struct employee emp2 = {"Youssef Mohamed","Doctor",22, 1000000};
+    struct Patient pat1 = {"Ahmed",1010,22,"Diabetes", 201};
+    struct Patient pat2 = {"Marwa",2020,25,"Giving Birth", 205};
+    struct Patient pat3 = {"Mohamed",3030,60,"Heart Attack", 206};
+
+    int choice;
+   int start;
+ int numUsers = 10;
+ //1st function that was not meant to be here but the program didn't run except like this.
+void Access(struct Login user) {
+    //it takes the intial type values that we added up at the Login user struct and compares it with each type no.
+    //1-recepionist
+    //2-doctor
+    //3,4,5-patients
+    if (user.type == 0)  {
+        //the user's data display
+        printf("Welcome, %s\n", user.username);
+    printf("Employee Name: %s\n", emp1.name);
+     printf("Employee Title: %s\n", emp1.jobtitle);
+    printf("Employee Age: %i\n", emp1.age);
+    printf("Employee Salary: %i\n", emp1.salary);
+        printf("\n");
+        //the menue having this user's privilages 
+     printf("1. Check Empty rooms \n");
+     printf("2. Remove reservation\n");
+      printf("3. EXIT\n");
+      //do-while loop to make it atleast loop once and continues as the user enters his choice 
+      do {
+       printf("Enter your choice: ");
+        scanf("%d", &choice);
+        //switch case to break after any of the cases occurs 
+        //it is euqivelent to using if and else if but with break between each loop of them
+        //switch is more efficient when it comes to indpendent tasks
+
+        switch (choice) {
+            case 1:
+            //calling the check room function
+               checkroom(reservations, num_rooms);
+    
+                break;
+            case 2:
+            //calling remove reservation function
+            
+            removeReservation(reservations, num_rooms);
+                 
+                break;
+            case 3:
+                 printf("Exiting program. Goodbye!\n");
+                 break;
+            
+            default:
+            //if the user eneterd any no that doesn't has meaning in the menue 
+               printf("Invalid choice. Please try again.\n");
+        }
+        
+    } while (choice != 3);
+    
+    } else if (user.type == 1)  {
+       //display the doctor's data
+        printf("Welcome, %s\n", user.username);
+    printf("Employee Name: %s\n", emp2.name);
+     printf("Employee Title: %s\n", emp2.jobtitle);
+    printf("Employee Age: %i\n", emp2.age);
+    printf("Employee Salary: %i\n", emp2.salary);
+    printf("\n");
+    //display the menue having his functions
+     printf("1. Update Status \n");
+      printf("2. Exit\n");
+      do {
+       printf("Enter your choice: \n");
+        scanf("%d", &choice);
+      
+
+        switch (choice) {
+            case 1:
+          updatestatus( patients,numusers);
+            
+                break;
+            case 2:
+                 printf("Exiting program. Goodbye!\n");
+                 break;
+            
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+        
+    } while (choice != 2);
+    }
+    else if (user.type == 2)  {
+        //display the 1st patient's data 
+        printf("Welcome, %s\n", user.username);
+    printf("Patient Name: %s\n", pat1.name);
+     printf("Patient ID: %i\n", pat1.id);
+    printf("Patient Age: %i\n", pat1.age);
+    printf("Patient Status: %s\n", pat1.status);
+    printf("Patient Room: %i\n", pat1.room);
+     printf("\n");
+     //his menue 
+     printf("1. Remove Reservation\n");
+     printf("2. Exit\n");
+     int reserved;
+      
+   do {
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+               removeReservation(reservations, num_rooms);
+                break;
+            case 2:
+                  printf("Exiting program. Goodbye!\n");
+                break;
+       
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+        
+    } while (choice != 2);
+    }
+ 
+       else if (user.type == 3)  {
+           //display 2nd patient's data 
+        printf("Welcome, %s\n", user.username);
+    printf("Patient Name: %s\n", pat2.name);
+     printf("Patient ID: %i\n", pat2.id);
+    printf("Patient Age: %i\n", pat2.age);
+    printf("Patient Status: %s\n", pat2.status);
+    printf("Patient Room: %i\n", pat2.room);
+    //her menue
+    printf("\n");
+     printf("1. Remove Reservation\n");
+     printf("2. Exit\n");
+        
+   do {
+      printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+               removeReservation(reservations, num_rooms);
+                break;
+            case 2:
+                 printf("Exiting program. Goodbye!\n");
+                break;
+            
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+        
+    } while (choice != 2);
+    }
+           else if (user.type == 4)  {
+               //display the 3rd patient's data
+        printf("Welcome, %s\n", user.username);
+    printf("Patient Name: %s\n", pat3.name);
+     printf("Patient ID: %i\n", pat3.id);
+    printf("Patient Age: %i\n", pat3.age);
+    printf("Patient Status: %s\n", pat3.status);
+    printf("Patient Room: %i\n", pat3.room);
+    //his menue
+    printf("\n");
+     printf("1. Remove/Add Reservation\n");
+     printf("2. Exit\n");
+      
+       
+   do {
+       printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+               removeReservation(reservations, num_rooms);
+                break;
+            case 2:
+                 printf("Exiting program. Goodbye!\n");
+                break;
+            
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+        
+    } while (choice != 2);
+    }
+    else {
+      printf("NO RESERVATION WITH THIS ID/PASSWORD\n");
+    }
+}
+//function that is responsabile for taking username and password from user to login 
+void login(struct Login users[], int numUsers) {
+    char username[50];
+    char password[50];
+
+    printf("Please enter your username and password to login.\n");
+
+    printf("Username: ");
+    scanf("%s",& username);
+    printf("Password: ");
+    scanf("%s",& password);
+//strcmp compares to structs and returns 0 if equal strcmp(destination,source).
+//here it compares the username entered with the existing and same for password 
+    for (int i = 0; i < numUsers; i++) {
+        if (strcmp(username, users[i].username) == 0 && strcmp(password, users[i].password) == 0) {
+            printf("Login successful.\n");
+            Access(users[i]);
+         return ;
+        }
+    }
+
+    printf("Invalid username or password. Please try again.\n");
+}
+//function to check if entered id is from the ids we have or not
+void checkid() {
+    char x[5]="1010";
+    char y[5]="2020";
+    char z [5]="3030";
+    char f [5]="1234";
+    char g [5]="1235";
+      printf("Enter ID: ");
+   char idString[8]; 
+    scanf("%s",&idString);
+    if (strlen(idString) != 4)
+    {
+    printf("Error: Please enter a 4-digit number.\n");
+   
+    } 
+    //if equal to the ids we have then log in 
+  else if ((strcmp(idString,x)==0))
+  {
+      printf("Valid ID \n");
+      login(users,numUsers);
+     
+      
+  }
+  else if ((strcmp(y,idString)==0))
+  {
+      printf("Valid ID \n");
+      login(users,numUsers);
+      
+  }
+  else if((strcmp(idString,z)==0))
+  {
+      printf("Valid ID \n");
+      login(users,numUsers);
+ 
+  }
+  else if ((strcmp(idString,g)==0))
+  {
+      printf("Valid ID \n");
+      login(users,numUsers);
+     
+  }
+  else if((strcmp(idString,f)==0))
+  {
+      printf("Valid ID \n");
+      login(users,numUsers);
+   
+  }
+  //if not equal then sign up
+  else {
+      printf("This id doesn't exist\n");
+      printf("Please Sign-up\n");
+      signup();
+ 
+  }
+  
+  }
+  //the function that starts the program by asking the user to login or sign up
+ do{
+printf("press 1. Login\n");
+printf("      2. Signup\n");
+scanf("%d", &start);
+       
+        switch (start) {
+            case 1:
+            checkid();
+                break;
+            case 2:
+                 printf("Welcome to the our website!\n");
+               signup();
+                break;
+            
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+ } while (start != 2);
+}
